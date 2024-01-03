@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafico CIS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="icon" href="https://www.epdata.es/favicon.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.3/html2canvas.min.js"></script>
+
+    <style>
+        html {
+            font-family: 'Heebo';
+        }
+
+        button {
+            margin: 0.8rem;
+            padding: 0.2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: #00bcd4;
+            color: white;
+            height: 2rem;
+            width: 18rem;
+            border: #87afb1;
+        }
+
+        button:hover {
+            background-color: #8dd0d4;
+            cursor: pointer;
+        }
+
+        button:active {
+            background-color: #007780;
+        }
+
+        main {
+            border: 1px solid gray;
+            width: 1660px;
+            height: 928px;
+            flex-direction: column;
+            position: static;
+        }
+
+        header {
+            height: 20%;
+            padding-left: 6rem;
+            padding-top: 2rem;
+        }
+
+        #pie-grafico {
+            height: 20%;
+        }
+
+        footer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-top: 6rem;
+        }
+
+        form {
+            height: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        .form-button {
+            margin-top: 20px;
+        }
+
+        .circulo {
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+        }
+
+        .circulo-interno {
+            width: 700px;
+            height: 700px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .circulo-externo {
+            width: 750px;
+            height: 750px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 50%;
+            opacity: 0.55;
+            position: absolute;
+        }
+
+        #circulo-1 {
+            transform: scale(1.00) translate(0.15rem, 15.7rem);
+            z-index: 1;
+            position: absolute;
+        }
+
+        #circulo-2 {
+            transform: scale(0.6) translate(0.5rem, 26rem);
+            z-index: 5;
+            position: absolute;
+        }
+
+        .etiqueta-nuevos {
+            position: absolute;
+            color: rgb(255, 255, 255);
+            font-size: 1.9rem;
+            font-weight: bold;
+            z-index: 15;
+        }
+
+        #etiqueta-sumar-nuevo {
+            transform: translate(16.9rem, 30rem);
+        }
+
+        #etiqueta-psoe-nuevo {
+            transform: translate(25.2rem, 14rem);
+        }
+
+        #etiqueta-pp-nuevo {
+            transform: translate(63.9rem, 16rem);
+        }
+
+        #etiqueta-vox-nuevo {
+            transform: translate(70.3rem, 30rem);
+        }
+
+        .etiqueta-anterior {
+            position: absolute;
+            font-size: 1.7rem;
+            color: rgb(255, 255, 255);
+            font-weight: bold;
+            z-index: 15;
+        }
+
+        #etiqueta-sumar-anterior {
+            transform: translate(27rem, 31rem);
+        }
+
+        #etiqueta-psoe-anterior {
+            transform: translate(33.2rem, 20rem);
+        }
+
+        #etiqueta-pp-anterior {
+            transform: translate(54.9rem, 20rem);
+        }
+
+        #etiqueta-vox-anterior {
+            transform: translate(61.5rem, 31.5rem);
+        }
+
+        .logo-partido-grande {
+            width: 6.5rem;
+            height: 6.5rem;
+            position: absolute;
+            z-index: 20;
+        }
+
+        .logo-partido-pequeno {
+            width: 5rem;
+            height: 5rem;
+            position: absolute;
+            z-index: 20;
+        }
+
+        #logo-vox {
+            transform: translate(31rem, -11rem);
+        }
+
+        #logo-pp {
+            transform: translate(18rem, -32rem);
+        }
+
+        #logo-psoe {
+            transform: translate(-19rem, -31rem);
+        }
+
+        #logo-sumar {
+            transform: translate(-30rem, -15rem);
+        }
+
+        .abreviatura-fecha {
+            color: #505050;
+            position: absolute;
+            z-index: 30;
+            text-align: left;
+        }
+
+        #etiqueta-cis-actual {
+            transform: translate(16rem, 36rem);
+        }
+
+        #etiqueta-cis-nuevo {
+            transform: translate(26rem, 36rem);
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <main>
+        <header>
+            <h2 style="color: #cc0000; margin-bottom:0; margin-top: 3rem; font-size: 2rem">
+                Barómetro del CIS</h2>
+            <h2 style="margin-top:0; font-size: 2rem; margin-bottom:0">Estimación de
+                voto para las elecciones generales</h2>
+            <h2 style="color: #858585;margin:0; font-size: 2rem; font-weight:400;">(en
+                % de voto válido)</h2>
+        </header>
+
+        <p id="etiqueta-cis-actual" class="abreviatura-fecha">Abr</p>
+        <p id="etiqueta-cis-nuevo" class="abreviatura-fecha">Abr nuevo</p>
+
+        <p id="etiqueta-sumar-nuevo" class="etiqueta-nuevos"></p>
+        <p id="etiqueta-psoe-nuevo" class="etiqueta-nuevos"></p>
+        <p id="etiqueta-pp-nuevo" class="etiqueta-nuevos"></p>
+        <p id="etiqueta-vox-nuevo" class="etiqueta-nuevos"></p>
+
+        <p id="etiqueta-sumar-anterior" class="etiqueta-anterior"></p>
+        <p id="etiqueta-psoe-anterior" class="etiqueta-anterior"></p>
+        <p id="etiqueta-pp-anterior" class="etiqueta-anterior"></p>
+        <p id="etiqueta-vox-anterior" class="etiqueta-anterior"></p>
+
+
+        <div id="contenido-grafico"
+            style="display:flex; justify-content: center; height: 80%; width: 90%; align-items: flex-end">
+            <img id="fondo-sin-datos" style="width: 58%; transform: translate(7px, -119px); position: absolute; z-index: 2;" src="img/sin-datos.png">
+            <div id="otros-partidos"
+                style="position: absolute; z-index:15; transform: translate(41rem, -33rem); text-align: left; color:#7e7e7e; font-size: 1.2rem; font-weight: bold; border-left: 1px solid #a7a7a7; padding-left: 1rem">
+                <span id="partido-1">Partido 1: dato</span><br>
+                <span id="partido-2">Partido 2: dato</span><br>
+                <span id="partido-3">Partido 3: dato</span><br>
+                <span id="partido-4">Partido 4: dato</span><br>
+                <span id="partido-5">Partido 5: dato</span><br>
+                <span id="partido-6">Partido 6: dato</span><br>
+                <span id="partido-7">Partido 7: dato</span><br>
+                <span id="partido-8">Partido 8: dato</span><br>
+                <span id="partido-9">Partido 9: dato</span><br>
+                <span id="partido-10">Partido 10: dato</span><br>
+                <span id="partido-11">Partido 11: dato</span><br>
+                <span id="partido-12">Partido 12: dato</span><br>
+                <span id="partido-13">Partido 13: dato</span><br>
+            </div>
+
+            <img id="logo-sumar" class="logo-partido-pequeno" src="/img/sumar.png" />
+            <img id="logo-psoe" class="logo-partido-grande" src="/img/PSOE.png" />
+            <img id="logo-pp" class="logo-partido-grande" src="/img/PP.png" />
+            <img id="logo-vox" class="logo-partido-pequeno" src="img/Vox.png" />
+
+            <canvas id="hemiciclo-cis-nuevo" style="position: absolute; transform: translateY(350px);" width="1000"
+                height="1000"></canvas>
+            <div class="circulo" id="circulo-2">
+                <div class="circulo-externo"></div>
+                <div class="circulo-interno"></div>
+            </div>
+            <canvas id="hemiciclo-cis-anterior" width="1500" height="1500" style="z-index: 2;
+                position: absolute;
+                transform: translate(4px, 599px);"></canvas>
+            <div class="circulo" id="circulo-1">
+                <div class="circulo-externo"></div>
+                <div class="circulo-interno"></div>
+            </div>
+            <img src="img/porcentaje-2023-nvo.png" style="width: 27rem;
+            z-index: 5;
+            transform: translate(0.4rem, -97px);" />
+            <img id="logo" src="/img/logoepdata.jpg" style="position: absolute; position: absolute; z-index: 20; width: 6%; transform: translate(49rem, -6rem);"/>
+        </div>
+
+    </main>
+
+</body>
+<footer>
+
+    <div
+        style="z-index: 26; position: absolute; width: 35%; text-align: center; display: flex; align-items: center; justify-content: center; flex-direction:column">
+
+        <p style="color: rgb(117, 117, 117); padding-bottom:0; margin-bottom:0">Pegar debajo
+            código:</p>
+        <textarea id="jsonData" onfocus="clearText(this)"
+            style="width: 100%; height: 120px; margin-top: 1rem; font-size:1.2rem"></textarea>
+        <button id="updateContent" style="width: 100%">Actualizar gráfico</button>
+        <hr style="width: 100%">
+        <button id="descarga-imagen" style="background-color: #00343b; width: 100%">Descargar imagen</button>
+
+    </div>
+
+</footer>
+
+<script>
+
+    document.getElementById("updateContent").addEventListener("click", function () {
+
+        let jsonData = document.getElementById("jsonData").value;
+
+        try {
+            let data = JSON.parse(jsonData);
+
+            // Actualizar etiquetas para 'nuevo-cis'
+            document.getElementById("etiqueta-sumar-nuevo").textContent = obtenerDatoPartido(data['nuevo-cis']['datos-partidos'], "SUMAR");
+            document.getElementById("etiqueta-psoe-nuevo").textContent = obtenerDatoPartido(data['nuevo-cis']['datos-partidos'], "PSOE");
+            document.getElementById("etiqueta-pp-nuevo").textContent = obtenerDatoPartido(data['nuevo-cis']['datos-partidos'], "PP");
+            document.getElementById("etiqueta-vox-nuevo").textContent = obtenerDatoPartido(data['nuevo-cis']['datos-partidos'], "VOX");
+
+            // Actualizar etiquetas para 'cis-anterior'
+            document.getElementById("etiqueta-sumar-anterior").textContent = obtenerDatoPartido(data['cis-anterior']['datos-partidos'], "SUMAR");
+            document.getElementById("etiqueta-psoe-anterior").textContent = obtenerDatoPartido(data['cis-anterior']['datos-partidos'], "PSOE");
+            document.getElementById("etiqueta-pp-anterior").textContent = obtenerDatoPartido(data['cis-anterior']['datos-partidos'], "PP");
+            document.getElementById("etiqueta-vox-anterior").textContent = obtenerDatoPartido(data['cis-anterior']['datos-partidos'], "VOX");
+
+            // Actualizar las etiquetas con las abreviaturas de los meses
+            document.getElementById("etiqueta-cis-actual").textContent = data['nuevo-cis'].abr || '';
+            document.getElementById("etiqueta-cis-nuevo").textContent = data['cis-anterior'].abr || '';
+
+            // Acceder al mes y año del 'nuevo-cis'
+            const mesNuevoCIS = data['nuevo-cis'].mes;
+            const añoNuevoCIS = data['nuevo-cis'].año;
+            const nombreMesNuevoCIS = mesEnTexto(mesNuevoCIS);
+
+            // Actualizar el título con el mes y año del 'nuevo-cis'
+            let titulos = document.querySelectorAll("header h2");
+            titulos[0].textContent = `Barómetro del CIS, ${nombreMesNuevoCIS} ${añoNuevoCIS}`;
+
+            dibujarHemiciclo('hemiciclo-cis-nuevo', data['nuevo-cis']['datos-partidos'], 490, 800, 315);
+            dibujarHemiciclo('hemiciclo-cis-anterior', data['cis-anterior']['datos-partidos'], 338, 450, 157.5);
+
+            // Actualizar datos de otros partidos
+            actualizarDatosOtrosPartidos(data['nuevo-cis']['datos-partidos']);
+
+            document.getElementById("fondo-sin-datos").style.display = 'none';
+
+        } catch (e) {
+            console.error("Error al parsear JSON: ", e);
+        }
+    });
+
+    function mesEnTexto(mes) {
+        const nombresMeses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+        return nombresMeses[mes - 1];
+    }
+
+    function dibujarHemiciclo(canvasId, datosPartidos, radio) {
+        let ordenPartidos = ["Invisible", "SUMAR", "PSOE", "ERC", "Junts", "EH Bildu", "EAJ-PNV", "PACMA", "BNG", "CCa", "UPN", "Otros partidos", "En blanco", "PP", "VOX"]; // Define el orden deseado aquí
+
+        let canvas = document.getElementById(canvasId);
+        let ctx = canvas.getContext('2d');
+
+        let dpr = window.devicePixelRatio || 1;
+        let rect = canvas.getBoundingClientRect();
+
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+
+        ctx.scale(dpr, dpr);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+
+        if (!datosPartidos || datosPartidos.length === 0) {
+            // Dibujar un hemiciclo en gris si no hay datos
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, radio, 0, Math.PI, false);
+            ctx.closePath();
+            ctx.fillStyle = '#CCCCCC'; // Color gris
+            ctx.fill();
+        } else {
+            // Reorganizar datosPartidos según el array ordenPartidos
+            let datosOrdenados = ordenPartidos.map(partidoOrden =>
+                datosPartidos.find(partido => partido.partido === partidoOrden)
+            ).filter(partido => partido !== undefined);
+
+            // Calcula el total usando datosOrdenados
+            let totalDatos = datosOrdenados.reduce((total, partido) => total + partido.dato, 0);
+            let anguloInicio = 0;
+
+            // Utiliza datosOrdenados para dibujar el gráfico
+            datosOrdenados.forEach(partido => {
+                let anguloFin = anguloInicio + (partido.dato / totalDatos) * 2 * Math.PI;
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radio, anguloInicio, anguloFin);
+                ctx.closePath();
+
+                let colorPartido = coloresPartidos[partido.partido] || '#606060'; // Color de relleno
+                ctx.fillStyle = colorPartido;
+                ctx.fill();
+
+                // Agregar borde blanco solo si el partido tiene color definido
+                if (colorPartido !== '#606060') {
+                    ctx.strokeStyle = '#FFFFFF'; // Color del borde
+                    ctx.lineWidth = 2; // Grosor del borde
+                    ctx.stroke(); // Aplicar el borde al sector
+                }
+
+                anguloInicio = anguloFin;
+            });
+        }
+
+        // Restaura el estado previo del contexto del canvas
+        ctx.restore();
+    }
+
+    function actualizarDatosOtrosPartidos(datosPartidos) {
+        // Filtrar los partidos, excluyendo los principales y 'Invisible'
+        let otrosPartidos = datosPartidos.filter(partido =>
+            !["PP", "PSOE", "SUMAR", "VOX", "Invisible"].includes(partido.partido)
+        );
+
+        // Separar 'Otros partidos' y 'En blanco' si existen
+        const otrosPartidosItem = otrosPartidos.find(partido => partido.partido === "Otros partidos");
+        const enBlancoItem = otrosPartidos.find(partido => partido.partido === "En blanco");
+
+        // Filtrar para quitar 'Otros partidos' y 'En blanco'
+        otrosPartidos = otrosPartidos.filter(partido =>
+            partido.partido !== "Otros partidos" && partido.partido !== "En blanco"
+        );
+
+        // Ordenar los partidos restantes por su valor
+        otrosPartidos.sort((a, b) => b.dato - a.dato);
+
+        // Agregar 'Otros partidos' y 'En blanco' al final si existen
+        if (otrosPartidosItem) otrosPartidos.push(otrosPartidosItem);
+        if (enBlancoItem) otrosPartidos.push(enBlancoItem);
+
+        // Generar el contenido HTML con los datos de los partidos
+        let contenidoHtml = otrosPartidos.map(partido =>
+            `<span>${partido.partido}: ${partido.dato.toString().replace('.', ',')}%</span><br>`
+        ).join('');
+
+        // Establecer el contenido en el elemento HTML
+        document.getElementById("otros-partidos").innerHTML = contenidoHtml;
+    }
+
+    function obtenerDatoPartido(datosPartidos, nombrePartido) {
+        const partido = datosPartidos.find(p => p.partido === nombrePartido);
+        if (partido) {
+            // Reemplaza puntos por comas y añade el símbolo %
+            return partido.dato.toString().replace('.', ',') + '%';
+        }
+        return '';
+    }
+
+
+    let coloresPartidos = {
+        "PP": "#0154a3",
+        "PSOE": "#e12022",
+        "SUMAR": "#E61455",
+        "VOX": "#5abf35",
+        "ERC": "#606060",
+        "Junts": "#606060",
+        "EH Bildu": "#606060",
+        "EAJ-PNV": "#606060",
+        "PACMA": "#606060",
+        "BNG": "#606060",
+        "CCa": "#606060",
+        "UPN": "#606060",
+        "Otros partidos": "#606060",
+        "En blanco": "#606060",
+        "Invisible": "white"
+    };
+
+
+    document.getElementById("descarga-imagen").addEventListener("click", function () {
+        // Obtener el elemento que queremos capturar
+        let main = document.querySelector("main");
+
+        // Usar html2canvas para obtener el canvas del elemento
+        html2canvas(main, {
+            scale: 4  // Escala el canvas al doble de su tamaño original
+        }).then(canvas => {
+            // Crear un elemento <a> para la descarga
+            let a = document.createElement("a");
+            a.href = canvas.toDataURL("image/jpg");
+            a.download = "CIS.jpg";
+
+            // Simular un click en el enlace para iniciar la descarga
+            a.click();
+        });
+    });
+
+
+</script>
+
+</html>
